@@ -12,11 +12,12 @@ from .config import INSTALLED_COLUMNS, AVAILABLE_COLUMNS, STYLES
 class InstalledTab(TabFrame):
     """Tab for displaying installed WSL distributions."""
     
-    def __init__(self, parent, on_refresh: Callable, on_rename: Callable, on_delete: Callable):
+    def __init__(self, parent, on_refresh: Callable, on_rename: Callable, on_delete: Callable, on_launch_terminal: Callable = None):
         super().__init__(parent)
         self.on_refresh = on_refresh
         self.on_rename = on_rename
         self.on_delete = on_delete
+        self.on_launch_terminal = on_launch_terminal
         
         self.setup_ui()
     
@@ -58,6 +59,10 @@ class InstalledTab(TabFrame):
         # Bind selection event
         self.treeview.bind('<<TreeviewSelect>>', self.on_selection_change)
         
+        # Bind double-click event for launching terminal
+        if self.on_launch_terminal:
+            self.treeview.bind('<Double-1>', self.on_double_click)
+        
         # Create summary frame
         self.summary_frame = SummaryFrame(self, "Summary")
         self.setup_summary(self.summary_frame)
@@ -71,6 +76,18 @@ class InstalledTab(TabFrame):
         else:
             self.action_buttons.set_button_state('rename', 'disabled')
             self.action_buttons.set_button_state('delete', 'disabled')
+    
+    def on_double_click(self, event):
+        """Handle double-click event to launch terminal."""
+        if self.on_launch_terminal:
+            # Get the item that was double-clicked
+            item = self.treeview.identify_row(event.y)
+            if item:
+                values = self.treeview.item(item, 'values')
+                if values and len(values) > 0:
+                    dist_name = values[0]  # Name is the first column
+                    if dist_name and dist_name.strip():  # Make sure it's not empty
+                        self.on_launch_terminal(dist_name)
     
     def get_selected_distribution(self) -> Optional[str]:
         """Get the name of the selected distribution."""

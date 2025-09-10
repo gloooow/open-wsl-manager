@@ -4,6 +4,8 @@ Action handlers and business logic for the WSL Manager GUI.
 
 import threading
 import json
+import subprocess
+import os
 from tkinter import messagebox
 from typing import Callable, Optional
 
@@ -194,3 +196,30 @@ class WSLManagerActions:
     def show_warning(self, title: str, message: str):
         """Show warning dialog."""
         messagebox.showwarning(title, message)
+    
+    def launch_wsl_terminal(self, dist_name: str):
+        """Launch a command prompt terminal in the specified WSL distribution."""
+        try:
+            self.status_callback(f"Launching terminal for distribution '{dist_name}'...")
+            
+            # Launch the command in a new window
+            # On Windows, we can use start to open a new command prompt window
+            if os.name == 'nt':  # Windows
+                # Clean the distribution name to remove any potential hidden characters
+                clean_dist_name = dist_name.strip()
+                
+                # Use the Windows start command with proper quoting
+                # This approach should work more reliably
+                start_cmd = f'start "WSL Terminal - {clean_dist_name}" cmd /k "wsl -d {clean_dist_name}"'
+                subprocess.Popen(start_cmd, shell=True)
+                
+            else:
+                # For other systems, just run the command directly
+                cmd = ['wsl', '-d', dist_name]
+                subprocess.Popen(cmd)
+            
+            self.status_callback(f"Terminal launched for distribution '{dist_name}'")
+            
+        except Exception as e:
+            self.status_callback(f"Error launching terminal: {e}")
+            messagebox.showerror("Error", f"Failed to launch terminal for distribution '{dist_name}':\n{e}")

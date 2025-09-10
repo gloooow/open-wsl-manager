@@ -232,7 +232,8 @@ class WSLManagerGUI:
             self.notebook,
             on_refresh=self.refresh_installed,
             on_rename=self.rename_selected_distribution,
-            on_delete=self.delete_selected_distribution
+            on_delete=self.delete_selected_distribution,
+            on_launch_terminal=self.launch_wsl_terminal
         )
         self.notebook.add(self.installed_tab, text="Installed Distributions")
         
@@ -382,3 +383,7 @@ class WSLManagerGUI:
                 self.refresh_available()
             
             self.actions.install_distribution(dist_name, friendly_name, custom_name, refresh_both)
+    
+    def launch_wsl_terminal(self, dist_name: str):
+        """Launch a command prompt terminal in the specified WSL distribution."""
+        self.actions.launch_wsl_terminal(dist_name)
