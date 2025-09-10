@@ -1,34 +1,21 @@
 #!/usr/bin/env python3
 """
-WSL Manager GUI
+WSL Manager GUI - Legacy Entry Point
 
-A graphical user interface for managing WSL distributions.
+This file provides backward compatibility with the old GUI entry point.
+For new installations, use: wsl-manager-gui
 """
 
-import tkinter as tk
 import sys
+import os
 from pathlib import Path
 
-# Add src directory to path
-src_path = Path(__file__).parent / "src"
-sys.path.insert(0, str(src_path))
+# Add the current directory to Python path for backward compatibility
+current_dir = Path(__file__).parent
+sys.path.insert(0, str(current_dir))
 
-from src.gui.main_window import WSLManagerGUI
-
-
-def main():
-    """Main function to run the GUI application."""
-    root = tk.Tk()
-    app = WSLManagerGUI(root)
-    
-    # Center the window
-    root.update_idletasks()
-    x = (root.winfo_screenwidth() // 2) - (root.winfo_width() // 2)
-    y = (root.winfo_screenheight() // 2) - (root.winfo_height() // 2)
-    root.geometry(f"+{x}+{y}")
-    
-    root.mainloop()
-
+# Import and run the GUI main function
+from wsl_manager.gui import main
 
 if __name__ == "__main__":
     main()

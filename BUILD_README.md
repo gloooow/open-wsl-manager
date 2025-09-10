@@ -3,11 +3,13 @@
 ## Quick Build
 
 **Windows:**
+
 ```bash
 build.bat
 ```
 
 **Cross-platform:**
+
 ```bash
 python build.py
 ```
@@ -26,6 +28,7 @@ python build.py
 ## Output
 
 Executables will be created in:
+
 - `dist/` - Build output
 - `release/` - Distribution package
 

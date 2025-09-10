@@ -1,0 +1,13 @@
+include README.md
+include LICENSE
+include requirements.txt
+include MANIFEST.in
+recursive-include wsl_manager/assets *
+recursive-include build_scripts *
+recursive-include examples *
+recursive-include docs *
+global-exclude *.pyc
+global-exclude __pycache__
+global-exclude .git*
+global-exclude .DS_Store
+global-exclude *.egg-info

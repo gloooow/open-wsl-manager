@@ -1,9 +1,11 @@
 # Console Window Fix
 
 ## Problem
+
 When clicking buttons in the WSL Manager GUI, random CMD windows would flash briefly for a few milliseconds. This was happening because subprocess calls were using the default behavior which shows console windows.
 
 ## Solution
+
 Created a new utility module `src/subprocess_utils.py` that wraps subprocess calls with Windows-specific flags to suppress console windows.
 
 ### Changes Made
@@ -27,6 +29,7 @@ Created a new utility module `src/subprocess_utils.py` that wraps subprocess cal
 ## How It Works
 
 The `CREATE_NO_WINDOW` flag is a Windows-specific subprocess flag that:
+
 - Prevents console windows from appearing
 - Runs commands in the background silently
 - Maintains all functionality while hiding the console
@@ -36,6 +39,7 @@ The `CREATE_NO_WINDOW` flag is a Windows-specific subprocess flag that:
 To test the fix:
 
 1. **Rebuild your executables:**
+
    ```bash
    python build.py
    ```

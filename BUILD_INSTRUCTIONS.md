@@ -14,21 +14,24 @@ This document explains how to create standalone executables for the WSL Manager 
 ### Option 1: Automated Build (Recommended)
 
 1. **Create an icon (optional but recommended):**
+
    ```bash
    python create_icon.py
    ```
 
 2. **Run the build script:**
+
    ```bash
    python build.py
    ```
-   
+
    Or on Windows, simply double-click:
-   ```
+
+   ```bash
    build.bat
    ```
 
-2. **Find your executables:**
+3. **Find your executables:**
    - CLI version: `dist/WSLManager.exe`
    - GUI version: `dist/WSLManagerGUI.exe`
    - Release package: `release/` directory
@@ -36,16 +39,19 @@ This document explains how to create standalone executables for the WSL Manager 
 ### Option 2: Manual Build
 
 1. **Install PyInstaller:**
+
    ```bash
    pip install pyinstaller
    ```
 
 2. **Build CLI executable:**
+
    ```bash
    pyinstaller wsl_manager_cli.spec
    ```
 
 3. **Build GUI executable:**
+
    ```bash
    pyinstaller wsl_manager_gui.spec
    ```
@@ -54,7 +60,7 @@ This document explains how to create standalone executables for the WSL Manager 
 
 After a successful build, you'll find:
 
-```
+```text
 dist/
 ├── WSLManager.exe      # CLI executable
 └── WSLManagerGUI.exe   # GUI executable
@@ -68,16 +74,19 @@ release/
 ## Executable Features
 
 ### CLI Executable (`WSLManager.exe`)
+
 - **Size:** ~15-20 MB
 - **Console:** Yes (shows command output)
 - **Usage:**
-  ```
+
+  ```bash
   WSLManager.exe installed    # Show installed distributions
   WSLManager.exe available    # Show available distributions
   WSLManager.exe help         # Show help
   ```
 
 ### GUI Executable (`WSLManagerGUI.exe`)
+
 - **Size:** ~20-25 MB
 - **Console:** No (windowed application)
 - **Usage:** Double-click to launch
@@ -85,17 +94,21 @@ release/
 ## Distribution
 
 ### Standalone Distribution
+
 The executables are completely standalone and include:
+
 - Python runtime
 - All required libraries
 - Application code
 
 **Requirements for end users:**
+
 - Windows 10/11
 - WSL installed
 - No Python installation required
 
 ### File Sizes
+
 - CLI: ~15-20 MB
 - GUI: ~20-25 MB
 - Total release package: ~40-50 MB
@@ -105,23 +118,28 @@ The executables are completely standalone and include:
 ### Common Issues
 
 1. **"PyInstaller not found"**
+
    ```bash
    pip install pyinstaller
    ```
 
 2. **"Module not found" errors**
+
    - Ensure you're running from the project root directory
    - Check that all source files are present
 
 3. **Large executable size**
+
    - This is normal for PyInstaller builds
    - The executable includes the entire Python runtime
 
 4. **Antivirus warnings**
+
    - Some antivirus software may flag PyInstaller executables
    - This is a false positive - add to exclusions if needed
 
 5. **Console windows flashing briefly**
+
    - This has been fixed in the latest version
    - All subprocess calls now use `CREATE_NO_WINDOW` flag on Windows
    - Rebuild your executables to get the fix
@@ -131,16 +149,19 @@ The executables are completely standalone and include:
 To reduce executable size, you can modify the `.spec` files:
 
 1. **Exclude unnecessary modules:**
+
    ```python
    excludes=['matplotlib', 'numpy', 'pandas']  # Add to excludes list
    ```
 
 2. **Use UPX compression:**
+
    ```python
    upx=True  # Already enabled in our spec files
    ```
 
 3. **One-file vs one-directory:**
+
    - Current setup: One-file (easier distribution)
    - Alternative: One-directory (faster startup, larger distribution)
 
@@ -149,6 +170,7 @@ To reduce executable size, you can modify the `.spec` files:
 ### Custom Icons
 
 #### Automatic Icon Creation
+
 The easiest way to add an icon:
 
 ```bash
@@ -158,9 +180,11 @@ python create_icon.py
 This will create a simple WSL-themed icon automatically.
 
 #### Manual Icon Setup
+
 To use your own custom icon:
 
 1. **Create or obtain an `.ico` file:**
+
    - Use online converters (PNG/JPG → ICO)
    - Create with image editors (GIMP, Paint.NET)
    - Download from icon websites
@@ -170,29 +194,36 @@ To use your own custom icon:
 3. **The build process will automatically use it**
 
 #### Icon Requirements
+
 - **Format:** `.ico` file
 - **Sizes:** Multiple sizes recommended (16x16, 32x32, 48x48, 64x64, 128x128, 256x256)
 - **Location:** `icon.ico` in the project root directory
 
 #### No Icon
+
 If you don't want a custom icon:
+
 1. Edit the `.spec` files and set `icon=None`
 2. Or simply don't create an `icon.ico` file (build will warn but continue)
 
 ### Version Information
+
 To add version information to Windows executables:
 
 1. Create a version file (e.g., `version.txt`)
 2. Update the spec files:
+
    ```python
    version='version.txt'
    ```
 
 ### Code Signing
+
 For production distribution, consider code signing:
 
 1. Obtain a code signing certificate
 2. Update the spec files:
+
    ```python
    codesign_identity='Your Certificate Name'
    ```
@@ -200,16 +231,19 @@ For production distribution, consider code signing:
 ## Development vs Production Builds
 
 ### Development Builds
+
 - Include debug information
 - Larger file sizes
 - Better error reporting
 
 ### Production Builds
+
 - Optimized for size
 - No debug information
 - Better performance
 
 To create production builds, modify the spec files:
+
 ```python
 debug=False
 strip=True
@@ -221,15 +255,18 @@ upx=True
 Before distribution, test your executables:
 
 1. **Test on clean system:**
+
    - Install on Windows without Python
    - Verify WSL functionality
 
 2. **Test all features:**
+
    - CLI commands
    - GUI functionality
    - Error handling
 
 3. **Performance testing:**
+
    - Startup time
    - Memory usage
    - Response time
