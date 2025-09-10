@@ -5,7 +5,7 @@ Dialog classes for the WSL Manager GUI.
 import tkinter as tk
 from tkinter import ttk, messagebox
 from typing import Optional, Callable, Any
-from .config import DIALOG_CONFIGS, FONTS
+from .config import DIALOG_CONFIGS, FONTS, STYLES
 
 
 class BaseDialog:
@@ -22,6 +22,7 @@ class BaseDialog:
         self.dialog.resizable(False, False)
         self.dialog.transient(parent)
         self.dialog.grab_set()
+        self.dialog.configure(bg='white')  # Set dialog background to white
         
         # Center the dialog
         self.center_dialog()
@@ -43,14 +44,31 @@ class BaseDialog:
         buttons_frame.pack(fill=tk.X, pady=(10, 0))
         
         for i, config in enumerate(buttons_config):
+            # Determine button style based on button text
+            button_style = self.get_dialog_button_style(config['text'])
+            
             button = ttk.Button(
                 buttons_frame,
                 text=config['text'],
-                command=config['command']
+                command=config['command'],
+                style=button_style
             )
             button.pack(side=tk.RIGHT, padx=(5, 0) if i > 0 else (0, 0))
         
         return buttons_frame
+    
+    def get_dialog_button_style(self, button_text: str) -> str:
+        """Get the appropriate button style for dialog buttons."""
+        style_mapping = {
+            'Rename': STYLES['success_button'],
+            'Install': STYLES['success_button'],
+            'Cancel': STYLES['secondary_button'],
+            'OK': STYLES['primary_button'],
+            'Yes': STYLES['success_button'],
+            'No': STYLES['secondary_button']
+        }
+        
+        return style_mapping.get(button_text, STYLES['primary_button'])
     
     def show(self) -> Optional[Any]:
         """Show the dialog and return the result."""

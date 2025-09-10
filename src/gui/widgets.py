@@ -5,6 +5,7 @@ Reusable GUI widgets and components.
 import tkinter as tk
 from tkinter import ttk, scrolledtext
 from typing import Callable, Optional, Dict, Any
+from .config import STYLES
 
 
 class DistributionTreeView(ttk.Treeview):
@@ -36,20 +37,43 @@ class ActionButtons(ttk.Frame):
     
     def setup_buttons(self, button_configs: Dict[str, Dict[str, Any]]):
         """Create and configure action buttons."""
-        for name, config in button_configs.items():
+        for i, (name, config) in enumerate(button_configs.items()):
+            # Determine button style based on button type
+            button_style = self.get_button_style(name, config.get('style'))
+            
             button = ttk.Button(
                 self,
                 text=config['text'],
                 command=config['command'],
-                state=config.get('state', 'normal')
+                state=config.get('state', 'normal'),
+                style=button_style
             )
+            # Arrange buttons vertically
             button.grid(
-                row=config.get('row', 0),
-                column=config.get('column', 0),
-                padx=config.get('padx', (10, 0)),
-                pady=config.get('pady', 0)
+                row=i,
+                column=0,
+                padx=config.get('padx', (0, 0)),
+                pady=config.get('pady', (0, 5)),
+                sticky=(tk.W, tk.E)
             )
             self.buttons[name] = button
+    
+    def get_button_style(self, name: str, custom_style: Optional[str] = None) -> str:
+        """Get the appropriate button style based on button name and purpose."""
+        if custom_style:
+            return custom_style
+        
+        # Map button names to styles
+        style_mapping = {
+            'refresh': STYLES['primary_button'],
+            'install': STYLES['success_button'],
+            'rename': STYLES['secondary_button'],
+            'delete': STYLES['danger_button'],
+            'export': STYLES['primary_button'],
+            'help': STYLES['secondary_button']
+        }
+        
+        return style_mapping.get(name, STYLES['primary_button'])
     
     def get_button(self, name: str) -> ttk.Button:
         """Get a button by name."""
@@ -136,21 +160,30 @@ class TabFrame(ttk.Frame):
     """Base frame for tab content."""
     
     def __init__(self, parent, **kwargs):
-        super().__init__(parent, padding="10", **kwargs)
-        self.columnconfigure(0, weight=1)
+        # Use standard frame styling with white background
+        super().__init__(parent, padding="15", **kwargs)
+        self.columnconfigure(0, weight=1)  # Treeview column expands
+        self.columnconfigure(1, weight=0)  # Scrollbar column fixed width
+        self.columnconfigure(2, weight=0)  # Action buttons column fixed width
         self.rowconfigure(1, weight=1)
     
     def setup_header(self, title: str, buttons: Optional[ActionButtons] = None):
         """Set up the header with title and buttons."""
-        header = HeaderFrame(self, title, buttons)
-        header.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=(0, 10))
-        return header
+        # Title spans the treeview and scrollbar columns
+        title_label = ttk.Label(self, text=title, style='Header.TLabel')
+        title_label.grid(row=0, column=0, columnspan=2, sticky=tk.W, pady=(0, 10))
+        
+        # Action buttons go in column 2
+        if buttons:
+            buttons.grid(row=0, column=2, sticky=tk.NE, pady=(0, 10))
+        
+        return title_label
     
     def setup_treeview(self, treeview: DistributionTreeView, scrollbar: ttk.Scrollbar):
         """Set up treeview with scrollbar."""
-        treeview.grid(row=1, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
-        scrollbar.grid(row=1, column=1, sticky=(tk.N, tk.S))
+        treeview.grid(row=1, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), padx=(0, 0))
+        scrollbar.grid(row=1, column=1, sticky=(tk.N, tk.S), padx=(0, 0))
     
     def setup_summary(self, summary_frame: SummaryFrame):
         """Set up the summary frame."""
-        summary_frame.grid(row=2, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(10, 0))
+        summary_frame.grid(row=2, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(10, 0))

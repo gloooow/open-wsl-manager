@@ -4,7 +4,7 @@ Main window class for the WSL Manager GUI.
 
 import tkinter as tk
 from tkinter import ttk
-from .config import WINDOW_TITLE, WINDOW_SIZE, MIN_WINDOW_SIZE, STYLES, FONTS
+from .config import WINDOW_TITLE, WINDOW_SIZE, MIN_WINDOW_SIZE, STYLES, FONTS, COLORS
 from .tabs import InstalledTab, AvailableTab, ActionsTab
 from .widgets import StatusBar
 from .actions import WSLManagerActions
@@ -19,6 +19,7 @@ class WSLManagerGUI:
         self.root.title(WINDOW_TITLE)
         self.root.geometry(WINDOW_SIZE)
         self.root.minsize(*MIN_WINDOW_SIZE)
+        self.root.configure(bg='white')  # Set main window background to white
         
         # Initialize data models
         self.view_model = DistributionViewModel()
@@ -41,14 +42,161 @@ class WSLManagerGUI:
         style = ttk.Style()
         style.theme_use('clam')
         
-        # Configure colors
-        style.configure(STYLES['title'], font=FONTS['title'])
-        style.configure(STYLES['header'], font=FONTS['header'])
-        style.configure(STYLES['status'], font=FONTS['status'])
+        # Configure colors with white backgrounds
+        style.configure(STYLES['title'], font=FONTS['title'], background='white')
+        style.configure(STYLES['header'], font=FONTS['header'], background='white')
+        style.configure(STYLES['status'], font=FONTS['status'], background='white')
         
-        # Configure treeview
-        style.configure('Treeview', rowheight=25)
-        style.configure('Treeview.Heading', font=('Arial', 10, 'bold'))
+        # Configure modern button styles
+        self.setup_button_styles(style)
+        
+        # Configure modern tab styles
+        self.setup_tab_styles(style)
+        
+        # Configure modern frame styles
+        self.setup_frame_styles(style)
+        
+        # Configure treeview with modern styling
+        style.configure('Treeview', 
+                       rowheight=28,
+                       background='white',
+                       foreground=COLORS['text'],
+                       fieldbackground='white',
+                       borderwidth=1,
+                       relief='solid')
+        style.configure('Treeview.Heading', 
+                       font=FONTS['button'],
+                       background=COLORS['tab_inactive'],
+                       foreground=COLORS['tab_text_active'],
+                       borderwidth=1,
+                       relief='solid')
+        style.map('Treeview.Heading',
+                 background=[('active', COLORS['tab_border'])])
+    
+    def setup_button_styles(self, style):
+        """Configure modern button styles with hover effects."""
+        # Primary button (blue)
+        style.configure(STYLES['primary_button'],
+                       font=FONTS['button'],
+                       background=COLORS['primary'],
+                       foreground='white',
+                       borderwidth=0,
+                       focuscolor='none',
+                       padding=(12, 8))
+        
+        style.map(STYLES['primary_button'],
+                 background=[('active', COLORS['primary_hover']),
+                           ('pressed', COLORS['primary_hover']),
+                           ('disabled', COLORS['secondary'])],
+                 foreground=[('disabled', COLORS['button_text_disabled'])])
+        
+        # Secondary button (gray)
+        style.configure(STYLES['secondary_button'],
+                       font=FONTS['button'],
+                       background=COLORS['secondary'],
+                       foreground='white',
+                       borderwidth=0,
+                       focuscolor='none',
+                       padding=(12, 8))
+        
+        style.map(STYLES['secondary_button'],
+                 background=[('active', COLORS['secondary_hover']),
+                           ('pressed', COLORS['secondary_hover']),
+                           ('disabled', COLORS['border'])],
+                 foreground=[('disabled', COLORS['button_text_disabled'])])
+        
+        # Success button (green)
+        style.configure(STYLES['success_button'],
+                       font=FONTS['button'],
+                       background=COLORS['success'],
+                       foreground='white',
+                       borderwidth=0,
+                       focuscolor='none',
+                       padding=(12, 8))
+        
+        style.map(STYLES['success_button'],
+                 background=[('active', COLORS['success_hover']),
+                           ('pressed', COLORS['success_hover']),
+                           ('disabled', COLORS['border'])],
+                 foreground=[('disabled', COLORS['button_text_disabled'])])
+        
+        # Danger button (red)
+        style.configure(STYLES['danger_button'],
+                       font=FONTS['button'],
+                       background=COLORS['danger'],
+                       foreground='white',
+                       borderwidth=0,
+                       focuscolor='none',
+                       padding=(12, 8))
+        
+        style.map(STYLES['danger_button'],
+                 background=[('active', COLORS['danger_hover']),
+                           ('pressed', COLORS['danger_hover']),
+                           ('disabled', COLORS['border'])],
+                 foreground=[('disabled', COLORS['button_text_disabled'])])
+    
+    def setup_tab_styles(self, style):
+        """Configure modern tab styles."""
+        # Use default tab styling but with better colors and fonts
+        style.configure(STYLES['notebook'],
+                       background='white')
+        
+        # Configure tab styles with standard appearance but better colors
+        style.configure(STYLES['tab'],
+                       font=FONTS['tab'],
+                       background=COLORS['tab_inactive'],
+                       foreground=COLORS['tab_text_inactive'])
+        
+        # Map tab states for better visual feedback
+        style.map(STYLES['tab'],
+                 background=[('selected', COLORS['tab_active']),
+                           ('active', COLORS['tab_inactive'])],
+                 foreground=[('selected', COLORS['tab_text_active']),
+                           ('active', COLORS['tab_text_inactive'])])
+    
+    def setup_frame_styles(self, style):
+        """Configure modern frame styles."""
+        # Configure modern frame style with white background
+        style.configure(STYLES['modern_frame'],
+                       background='white',
+                       borderwidth=0,
+                       relief='flat')
+        
+        # Ensure all standard frames have white background
+        style.configure('TFrame',
+                       background='white')
+        
+        # Configure all label types with white backgrounds
+        style.configure('TLabel',
+                       background='white')
+        style.configure('Title.TLabel',
+                       background='white')
+        style.configure('Header.TLabel',
+                       background='white')
+        style.configure('Status.TLabel',
+                       background='white')
+        
+        # Configure LabelFrame with white background
+        style.configure('TLabelframe',
+                       background='white',
+                       borderwidth=1,
+                       relief='solid')
+        style.configure('TLabelframe.Label',
+                       font=FONTS['header'],
+                       foreground=COLORS['text'],
+                       background='white')
+        
+        # Configure Entry and other text components with white backgrounds
+        style.configure('TEntry',
+                       background='white',
+                       fieldbackground='white')
+        style.configure('TCombobox',
+                       background='white',
+                       fieldbackground='white')
+        style.configure('TText',
+                       background='white')
+        style.configure('TScrollbar',
+                       background='white')
     
     def create_widgets(self):
         """Create the main GUI widgets."""
@@ -66,8 +214,8 @@ class WSLManagerGUI:
         title_label = ttk.Label(main_frame, text=WINDOW_TITLE, style=STYLES['title'])
         title_label.grid(row=0, column=0, columnspan=2, pady=(0, 20))
         
-        # Create notebook for tabs
-        self.notebook = ttk.Notebook(main_frame)
+        # Create notebook for tabs with modern styling
+        self.notebook = ttk.Notebook(main_frame, style=STYLES['notebook'])
         self.notebook.grid(row=1, column=0, columnspan=2, sticky=(tk.W, tk.E, tk.N, tk.S))
         
         # Create tabs

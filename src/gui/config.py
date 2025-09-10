@@ -4,22 +4,52 @@ Configuration and constants for the GUI application.
 
 # Window configuration
 WINDOW_TITLE = "Open WSL Manager"
-WINDOW_SIZE = "1000x700"
-MIN_WINDOW_SIZE = (800, 600)
+WINDOW_SIZE = "1000x700"  # Increased width for better table display
+MIN_WINDOW_SIZE = (1000, 600)  # Increased minimum width
 
 # Style configuration
 STYLES = {
     'title': 'Title.TLabel',
     'header': 'Header.TLabel', 
-    'status': 'Status.TLabel'
+    'status': 'Status.TLabel',
+    'primary_button': 'Primary.TButton',
+    'secondary_button': 'Secondary.TButton',
+    'danger_button': 'Danger.TButton',
+    'success_button': 'Success.TButton',
+    'notebook': 'Modern.TNotebook',
+    'tab': 'Modern.TNotebook.Tab',
+    'modern_frame': 'Modern.TFrame'
 }
 
 # Font configuration
 FONTS = {
-    'title': ('Arial', 16, 'bold'),
-    'header': ('Arial', 12, 'bold'),
-    'status': ('Arial', 10),
-    'help': ('Arial', 8)
+    'title': ('Segoe UI', 16, 'bold'),
+    'header': ('Segoe UI', 12, 'bold'),
+    'status': ('Segoe UI', 10),
+    'help': ('Segoe UI', 8),
+    'button': ('Segoe UI', 9, 'normal'),
+    'tab': ('Segoe UI', 10, 'normal')
+}
+
+# Modern color scheme
+COLORS = {
+    'primary': '#0078d4',      # Microsoft blue
+    'primary_hover': '#106ebe', # Darker blue for hover
+    'secondary': '#6c757d',    # Gray
+    'secondary_hover': '#5a6268', # Darker gray for hover
+    'success': '#28a745',      # Green
+    'success_hover': '#218838', # Darker green for hover
+    'danger': '#dc3545',       # Red
+    'danger_hover': '#c82333', # Darker red for hover
+    'background': '#ffffff',   # White background for cleaner look
+    'text': '#212529',         # Dark text
+    'border': '#dee2e6',       # Light border
+    'tab_active': '#ffffff',   # White for active tab
+    'tab_inactive': '#f0f0f0', # Very light gray for inactive tabs
+    'tab_border': '#d0d0d0',   # Light gray tab border color
+    'tab_text_active': '#000000', # Black text for active tab
+    'tab_text_inactive': '#666666', # Dark gray text for inactive tabs
+    'button_text_disabled': '#999999' # Light gray text for disabled buttons
 }
 
 # Treeview column configurations
@@ -32,10 +62,10 @@ INSTALLED_COLUMNS = {
         'Default': 'Default'
     },
     'widths': {
-        'Name': 200,
-        'State': 100,
-        'Version': 100,
-        'Default': 80
+        'Name': 300,  # Increased for longer distribution names
+        'State': 120,  # Increased for better readability
+        'Version': 120,  # Increased for version info
+        'Default': 100   # Increased for better alignment
     }
 }
 
@@ -47,9 +77,9 @@ AVAILABLE_COLUMNS = {
         'Install Command': 'Install Command'
     },
     'widths': {
-        'Name': 200,
-        'Friendly Name': 250,
-        'Install Command': 200
+        'Name': 250,  # Increased for distribution names
+        'Friendly Name': 300,  # Increased for friendly names
+        'Install Command': 250  # Increased for install commands
     }
 }
 

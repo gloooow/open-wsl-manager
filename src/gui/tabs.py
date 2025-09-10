@@ -6,7 +6,7 @@ import tkinter as tk
 from tkinter import ttk
 from typing import Callable, Optional
 from .widgets import DistributionTreeView, ActionButtons, SummaryFrame, TabFrame
-from .config import INSTALLED_COLUMNS, AVAILABLE_COLUMNS
+from .config import INSTALLED_COLUMNS, AVAILABLE_COLUMNS, STYLES
 
 
 class InstalledTab(TabFrame):
@@ -26,20 +26,17 @@ class InstalledTab(TabFrame):
         button_configs = {
             'refresh': {
                 'text': 'Refresh',
-                'command': self.on_refresh,
-                'column': 1
+                'command': self.on_refresh
             },
             'rename': {
                 'text': 'Rename Selected',
                 'command': self.on_rename,
-                'state': 'disabled',
-                'column': 2
+                'state': 'disabled'
             },
             'delete': {
                 'text': 'Delete Selected',
                 'command': self.on_delete,
-                'state': 'disabled',
-                'column': 3
+                'state': 'disabled'
             }
         }
         
@@ -115,14 +112,12 @@ class AvailableTab(TabFrame):
         button_configs = {
             'refresh': {
                 'text': 'Refresh',
-                'command': self.on_refresh,
-                'column': 1
+                'command': self.on_refresh
             },
             'install': {
                 'text': 'Install Selected',
                 'command': self.on_install,
-                'state': 'disabled',
-                'column': 2
+                'state': 'disabled'
             }
         }
         
@@ -200,10 +195,10 @@ class ActionsTab(TabFrame):
         actions_buttons_frame = ttk.LabelFrame(self, text="Quick Actions", padding="10")
         actions_buttons_frame.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(0, 10))
         
-        # Action buttons
-        ttk.Button(actions_buttons_frame, text="Refresh All Data", command=self.on_refresh_all).grid(row=0, column=0, padx=(0, 10), pady=5)
-        ttk.Button(actions_buttons_frame, text="Export to JSON", command=self.on_export_json).grid(row=0, column=1, padx=(0, 10), pady=5)
-        ttk.Button(actions_buttons_frame, text="Show Help", command=self.on_show_help).grid(row=0, column=2, pady=5)
+        # Action buttons with modern styling
+        ttk.Button(actions_buttons_frame, text="Refresh All Data", command=self.on_refresh_all, style=STYLES['primary_button']).grid(row=0, column=0, padx=(0, 10), pady=5)
+        ttk.Button(actions_buttons_frame, text="Export to JSON", command=self.on_export_json, style=STYLES['success_button']).grid(row=0, column=1, padx=(0, 10), pady=5)
+        ttk.Button(actions_buttons_frame, text="Show Help", command=self.on_show_help, style=STYLES['secondary_button']).grid(row=0, column=2, pady=5)
         
         # JSON output frame
         from .widgets import JSONOutputFrame
