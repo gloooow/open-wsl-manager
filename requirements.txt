@@ -1,0 +1,28 @@
+# WSL Manager - WSL Distribution Parsers
+# No external dependencies required for this application
+# Uses only Python standard library modules:
+# - subprocess
+# - re
+# - json
+# - typing
+# - dataclasses
+# - pathlib
+
+# Project Structure:
+# ├── main.py                    # Main entry point (command-line interface)
+# ├── gui.py                     # Graphical user interface
+# ├── launch_gui.py              # Simple GUI launcher
+# ├── requirements.txt           # This file
+# ├── src/                      # Source code
+# │   ├── __init__.py           # Package initialization
+# │   ├── wsl_parser.py         # Parser for installed WSL distributions (wsl -l -v)
+# │   └── wsl_online_parser.py  # Parser for available WSL distributions (wsl --list --online)
+# ├── examples/                 # Example usage scripts
+# │   ├── example_usage.py      # Example usage for installed distributions parser
+# │   └── example_online_usage.py # Example usage for online distributions parser
+# └── docs/                     # Documentation
+#     └── README.md             # Project documentation
+
+# GUI Requirements:
+# - tkinter (included with Python standard library)
+# - threading (included with Python standard library)
