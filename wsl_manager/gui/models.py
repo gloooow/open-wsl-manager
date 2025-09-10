@@ -4,8 +4,8 @@ Data models and view models for the WSL Manager GUI.
 
 from dataclasses import dataclass
 from typing import List, Optional, Dict, Any
-from ..wsl_parser import WSLDistribution
-from ..wsl_online_parser import WSLOnlineDistribution
+from ..core.parser import WSLDistribution
+from ..core.online_parser import WSLOnlineDistribution
 
 
 @dataclass

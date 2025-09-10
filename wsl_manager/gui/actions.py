@@ -7,8 +7,8 @@ import json
 from tkinter import messagebox
 from typing import Callable, Optional
 
-from ..wsl_parser import WSLParser, WSLDistribution
-from ..wsl_online_parser import WSLOnlineParser, WSLOnlineDistribution
+from ..core.parser import WSLParser, WSLDistribution
+from ..core.online_parser import WSLOnlineParser, WSLOnlineDistribution
 from .dialogs import RenameDialog, InstallDialog, HelpDialog
 from .models import DistributionSummary, AvailableDistributionSummary
 

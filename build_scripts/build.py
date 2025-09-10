@@ -13,11 +13,13 @@ import shutil
 from pathlib import Path
 
 
-def run_command(command, description):
+def run_command(command, description, cwd=None):
     """Run a command and handle errors."""
     print(f"\n{'='*60}")
     print(f"Running: {description}")
     print(f"Command: {command}")
+    if cwd:
+        print(f"Working directory: {cwd}")
     print('='*60)
     
     try:
@@ -27,7 +29,7 @@ def run_command(command, description):
             kwargs['creationflags'] = subprocess.CREATE_NO_WINDOW
         
         result = subprocess.run(command, shell=True, check=True, 
-                              capture_output=True, text=True, **kwargs)
+                              capture_output=True, text=True, cwd=cwd, **kwargs)
         print("✓ Success!")
         if result.stdout:
             print("Output:", result.stdout)
@@ -76,7 +78,9 @@ def clean_build_dirs():
 
 def check_icon_file():
     """Check if icon file exists and warn if not."""
-    icon_path = Path("icon.ico")
+    # Get the project root directory (parent of build_scripts)
+    project_root = Path(__file__).parent.parent
+    icon_path = project_root / "icon.ico"
     if not icon_path.exists():
         print("⚠️  Warning: icon.ico not found")
         print("   Your executables will use the default Python icon")
@@ -98,8 +102,10 @@ def build_cli():
     
     check_icon_file()
     
-    command = "pyinstaller wsl_manager_cli.spec"
-    return run_command(command, "Building CLI executable")
+    # Get the project root directory (parent of build_scripts)
+    project_root = Path(__file__).parent.parent
+    command = "python -m PyInstaller build_scripts/wsl_manager_cli.spec"
+    return run_command(command, "Building CLI executable", cwd=project_root)
 
 
 def build_gui():
@@ -110,8 +116,10 @@ def build_gui():
     
     check_icon_file()
     
-    command = "pyinstaller wsl_manager_gui.spec"
-    return run_command(command, "Building GUI executable")
+    # Get the project root directory (parent of build_scripts)
+    project_root = Path(__file__).parent.parent
+    command = "python -m PyInstaller build_scripts/wsl_manager_gui.spec"
+    return run_command(command, "Building GUI executable", cwd=project_root)
 
 
 def create_release_package():
@@ -122,23 +130,36 @@ def create_release_package():
     
     release_dir = Path("release")
     if release_dir.exists():
-        shutil.rmtree(release_dir)
+        try:
+            shutil.rmtree(release_dir)
+        except PermissionError as e:
+            print(f"⚠️  Warning: Could not delete existing release directory: {e}")
+            print("   This usually happens when executables are being scanned by antivirus software.")
+            print("   Trying to copy files anyway...")
     
-    release_dir.mkdir()
+    release_dir.mkdir(exist_ok=True)
     
     # Copy executables
     cli_exe = Path("dist/WSLManager.exe")
     gui_exe = Path("dist/WSLManagerGUI.exe")
     
     if cli_exe.exists():
-        shutil.copy2(cli_exe, release_dir / "WSLManager.exe")
-        print(f"✓ Copied {cli_exe} to release/")
+        try:
+            shutil.copy2(cli_exe, release_dir / "WSLManager.exe")
+            print(f"✓ Copied {cli_exe} to release/")
+        except PermissionError as e:
+            print(f"⚠️  Warning: Could not copy CLI executable: {e}")
+            print("   The file may be in use or locked by antivirus software.")
     else:
         print(f"✗ CLI executable not found: {cli_exe}")
     
     if gui_exe.exists():
-        shutil.copy2(gui_exe, release_dir / "WSLManagerGUI.exe")
-        print(f"✓ Copied {gui_exe} to release/")
+        try:
+            shutil.copy2(gui_exe, release_dir / "WSLManagerGUI.exe")
+            print(f"✓ Copied {gui_exe} to release/")
+        except PermissionError as e:
+            print(f"⚠️  Warning: Could not copy GUI executable: {e}")
+            print("   The file may be in use or locked by antivirus software.")
     else:
         print(f"✗ GUI executable not found: {gui_exe}")
     
