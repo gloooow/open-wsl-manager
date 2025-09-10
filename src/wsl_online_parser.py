@@ -10,6 +10,7 @@ import subprocess
 import json
 import os
 from typing import List, Dict, Optional
+from .subprocess_utils import run_wsl_command
 from dataclasses import dataclass, asdict
 
 
@@ -29,11 +30,7 @@ class WSLOnlineParser:
     def get_wsl_online_output(self) -> str:
         """Execute 'wsl --list --online' command and return the output."""
         try:
-            result = subprocess.run(
-                ['wsl', '--list', '--online'],
-                capture_output=True,
-                check=True
-            )
+            result = run_wsl_command(['wsl', '--list', '--online'])
             # WSL output is in UTF-16 LE encoding without BOM
             return result.stdout.decode('utf-16le')
         except subprocess.CalledProcessError as e:
@@ -190,12 +187,7 @@ class WSLOnlineParser:
                 install_cmd = ['wsl', '--install', distribution_name]
                 
                 # Execute the install command
-                result = subprocess.run(
-                    install_cmd,
-                    capture_output=True,
-                    check=True,
-                    text=True
-                )
+                result = run_wsl_command(install_cmd, text=True)
                 
                 return True
             
@@ -214,7 +206,7 @@ class WSLOnlineParser:
             # Step 1: Install with default name (no-launch to avoid opening terminal)
             print(f"Installing {distribution_name} with default name...")
             install_cmd = ['wsl', '--install', distribution_name, '--no-launch']
-            subprocess.run(install_cmd, capture_output=True, check=True, text=True)
+            run_wsl_command(install_cmd, text=True)
             
             # Step 2: Wait for installation to complete
             print("Waiting for installation to complete...")
@@ -226,7 +218,7 @@ class WSLOnlineParser:
             
             print(f"Exporting {distribution_name} to temporary file...")
             export_cmd = ['wsl', '--export', distribution_name, temp_path]
-            subprocess.run(export_cmd, capture_output=True, check=True, text=True)
+            run_wsl_command(export_cmd, text=True)
             
             # Step 4: Import with custom name
             print(f"Importing as {custom_name}...")
@@ -236,12 +228,12 @@ class WSLOnlineParser:
             os.makedirs(import_location, exist_ok=True)
             
             import_cmd = ['wsl', '--import', custom_name, import_location, temp_path]
-            subprocess.run(import_cmd, capture_output=True, check=True, text=True)
+            run_wsl_command(import_cmd, text=True)
             
             # Step 5: Unregister the original distribution
             print(f"Removing original {distribution_name}...")
             unregister_cmd = ['wsl', '--unregister', distribution_name]
-            subprocess.run(unregister_cmd, capture_output=True, check=True, text=True)
+            run_wsl_command(unregister_cmd, text=True)
             
             # Step 6: Clean up temporary file
             os.unlink(temp_path)

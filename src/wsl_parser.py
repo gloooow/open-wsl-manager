@@ -10,6 +10,7 @@ import subprocess
 import re
 import json
 from typing import List, Dict, Optional
+from .subprocess_utils import run_wsl_command
 from dataclasses import dataclass, asdict
 
 
@@ -31,11 +32,7 @@ class WSLParser:
     def get_wsl_output(self) -> str:
         """Execute 'wsl -l -v' command and return the output."""
         try:
-            result = subprocess.run(
-                ['wsl', '-l', '-v'],
-                capture_output=True,
-                check=True
-            )
+            result = run_wsl_command(['wsl', '-l', '-v'])
             # WSL output is in UTF-16 LE encoding without BOM
             return result.stdout.decode('utf-16le')
         except subprocess.CalledProcessError as e:
@@ -145,11 +142,7 @@ class WSLParser:
                 raise ValueError(f"Distribution '{name}' not found")
             
             # Execute the unregister command
-            result = subprocess.run(
-                ['wsl', '--unregister', name],
-                capture_output=True,
-                check=True
-            )
+            result = run_wsl_command(['wsl', '--unregister', name])
             
             # Refresh the distributions list after deletion
             self.get_distributions()
@@ -189,7 +182,7 @@ class WSLParser:
             
             print(f"Exporting {old_name} to temporary file...")
             export_cmd = ['wsl', '--export', old_name, temp_path]
-            subprocess.run(export_cmd, capture_output=True, check=True, text=True)
+            run_wsl_command(export_cmd, text=True)
             
             # Step 2: Import with new name
             print(f"Importing as {new_name}...")
@@ -199,12 +192,12 @@ class WSLParser:
             os.makedirs(import_location, exist_ok=True)
             
             import_cmd = ['wsl', '--import', new_name, import_location, temp_path]
-            subprocess.run(import_cmd, capture_output=True, check=True, text=True)
+            run_wsl_command(import_cmd, text=True)
             
             # Step 3: Unregister the original distribution
             print(f"Removing original {old_name}...")
             unregister_cmd = ['wsl', '--unregister', old_name]
-            subprocess.run(unregister_cmd, capture_output=True, check=True, text=True)
+            run_wsl_command(unregister_cmd, text=True)
             
             # Step 4: Clean up temporary file
             os.unlink(temp_path)
